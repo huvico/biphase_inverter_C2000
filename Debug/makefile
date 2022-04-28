@@ -10,8 +10,20 @@ GEN_OPTS__FLAG :=
 GEN_CMDS__FLAG := 
 
 ORDERED_OBJS += \
+"./F2837xD_CodeStartBranch.obj" \
+"./F2837xD_DefaultISR.obj" \
+"./F2837xD_GlobalVariableDefs.obj" \
+"./F2837xD_Gpio.obj" \
+"./F2837xD_PieCtrl.obj" \
+"./F2837xD_PieVect.obj" \
+"./F2837xD_SysCtrl.obj" \
+"./F2837xD_usDelay.obj" \
+"./Peripheral_Setup.obj" \
+"./PiController.obj" \
+"./SVPWM.obj" \
 "./main.obj" \
 "../2837x_RAM_lnk_cpu1.cmd" \
+"../F2837xD_Headers_nonBIOS_cpu1.cmd" \
 $(GEN_CMDS__FLAG) \
 -llibc.a \
 
@@ -140,7 +152,7 @@ all: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 Biphase_inverter.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: C2000 Linker'
-	"D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/bin/cl2000" -v28 -ml -mt --cla_support=cla1 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu2 -g --diag_warning=225 --diag_wrap=off --display_error_number --abi=coffabi -z -m"Biphase_inverter.map" --stack_size=0x200 --warn_sections -i"D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/lib" -i"D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include" --reread_libs --diag_wrap=off --display_error_number --xml_link_info="Biphase_inverter_linkInfo.xml" --rom_model -o "Biphase_inverter.out" $(ORDERED_OBJS)
+	"D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/bin/cl2000" -v28 -ml -mt --cla_support=cla1 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu2 --define=CPU1 --define=_LAUNCHXL_F28379D -g --diag_warning=225 --diag_wrap=off --display_error_number --abi=coffabi -z -m"Biphase_inverter.map" --stack_size=0x200 --warn_sections -i"D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/lib" -i"D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include" --reread_libs --diag_wrap=off --display_error_number --xml_link_info="Biphase_inverter_linkInfo.xml" --rom_model -o "Biphase_inverter.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 
@@ -154,8 +166,9 @@ Biphase_inverter.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "main.obj" 
-	-$(RM) "main.d" 
+	-$(RM) "F2837xD_CodeStartBranch.obj" "F2837xD_DefaultISR.obj" "F2837xD_GlobalVariableDefs.obj" "F2837xD_Gpio.obj" "F2837xD_PieCtrl.obj" "F2837xD_PieVect.obj" "F2837xD_SysCtrl.obj" "F2837xD_usDelay.obj" "Peripheral_Setup.obj" "PiController.obj" "SVPWM.obj" "main.obj" 
+	-$(RM) "F2837xD_DefaultISR.d" "F2837xD_GlobalVariableDefs.d" "F2837xD_Gpio.d" "F2837xD_PieCtrl.d" "F2837xD_PieVect.d" "F2837xD_SysCtrl.d" "Peripheral_Setup.d" "PiController.d" "SVPWM.d" "main.d" 
+	-$(RM) "F2837xD_CodeStartBranch.d" "F2837xD_usDelay.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 
