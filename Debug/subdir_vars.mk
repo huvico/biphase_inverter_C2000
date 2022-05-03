@@ -14,6 +14,7 @@ ASM_SRCS += \
 ../F2837xD_usDelay.asm 
 
 C_SRCS += \
+../F2837xD_Adc.c \
 ../F2837xD_DefaultISR.c \
 ../F2837xD_GlobalVariableDefs.c \
 ../F2837xD_Gpio.c \
@@ -26,6 +27,7 @@ C_SRCS += \
 ../main.c 
 
 C_DEPS += \
+./F2837xD_Adc.d \
 ./F2837xD_DefaultISR.d \
 ./F2837xD_GlobalVariableDefs.d \
 ./F2837xD_Gpio.d \
@@ -38,6 +40,7 @@ C_DEPS += \
 ./main.d 
 
 OBJS += \
+./F2837xD_Adc.obj \
 ./F2837xD_CodeStartBranch.obj \
 ./F2837xD_DefaultISR.obj \
 ./F2837xD_GlobalVariableDefs.obj \
@@ -56,6 +59,7 @@ ASM_DEPS += \
 ./F2837xD_usDelay.d 
 
 OBJS__QUOTED += \
+"F2837xD_Adc.obj" \
 "F2837xD_CodeStartBranch.obj" \
 "F2837xD_DefaultISR.obj" \
 "F2837xD_GlobalVariableDefs.obj" \
@@ -70,6 +74,7 @@ OBJS__QUOTED += \
 "main.obj" 
 
 C_DEPS__QUOTED += \
+"F2837xD_Adc.d" \
 "F2837xD_DefaultISR.d" \
 "F2837xD_GlobalVariableDefs.d" \
 "F2837xD_Gpio.d" \
@@ -85,11 +90,8 @@ ASM_DEPS__QUOTED += \
 "F2837xD_CodeStartBranch.d" \
 "F2837xD_usDelay.d" 
 
-ASM_SRCS__QUOTED += \
-"../F2837xD_CodeStartBranch.asm" \
-"../F2837xD_usDelay.asm" 
-
 C_SRCS__QUOTED += \
+"../F2837xD_Adc.c" \
 "../F2837xD_DefaultISR.c" \
 "../F2837xD_GlobalVariableDefs.c" \
 "../F2837xD_Gpio.c" \
@@ -100,5 +102,9 @@ C_SRCS__QUOTED += \
 "../PiController.c" \
 "../SVPWM.c" \
 "../main.c" 
+
+ASM_SRCS__QUOTED += \
+"../F2837xD_CodeStartBranch.asm" \
+"../F2837xD_usDelay.asm" 
 
 

@@ -49,7 +49,7 @@ void svpwm_bi(float* teta, float* V_alpha, float* V_beta,float* wma,float* wmb,f
     {
         U1=sqrtf(2);
         U2=1;
-        teta1=M_PI*225/180;
+        teta1=M_PI*1.25;
         teta2=M_PI;
         setor=4;
     }
@@ -57,13 +57,13 @@ void svpwm_bi(float* teta, float* V_alpha, float* V_beta,float* wma,float* wmb,f
         {
         U1=sqrtf(2);
         U2=1;
-        teta1=M_PI*225/180;
-        teta2=M_PI*270/180;
+        teta1=M_PI*1.25;
+        teta2=M_PI*1.5;
         setor=5;
         }
 
 
-    Uref = sqrtf(*V_alpha**V_alpha+*V_beta**V_beta);
+    Uref = sqrtf(powf(*V_alpha,2)+powf(*V_beta,2));//*V_alpha*(*V_alpha)+*V_beta*(*V_beta));
 
     t1=(Uref/U1)*(sin(teta2-*teta)/sin(teta2-teta1));
     t2=(Uref/U2)*(sin(*teta-teta1)/sin(teta2-teta1));
