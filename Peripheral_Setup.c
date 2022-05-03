@@ -69,7 +69,7 @@ void Setup_PWM(void){
     EPwm1Regs.DBRED.bit.DBRED = FALL_TIME; // fall
     //ativar o trigger do pwm
     EPwm1Regs.ETSEL.bit.SOCAEN = 1;//enable SOC on A group
-    EPwm1Regs.ETSEL.bit.SOCASEL = ET_CTR_PRDZERO; // TRIGGER ZERO AND PRD, onde dispara o evento
+    EPwm1Regs.ETSEL.bit.SOCASEL = ET_CTR_PRD;//ET_CTR_PRDZERO; // TRIGGER ZERO AND PRD, onde dispara o evento
     EPwm1Regs.ETPS.bit.SOCAPRD = ET_1ST; // trigger on every event
 
 
@@ -168,9 +168,9 @@ void Setup_ADC(void){
     AdcaRegs.ADCSOC1CTL.bit.ACQPS = acqps; // sample window
     AdcaRegs.ADCSOC1CTL.bit.TRIGSEL = TRIG_SEL_ePWM1_SOCA;    // event that trigger the adc, vide table 11-33
     //define the channel 5 - current measure 2
- //   AdcaRegs.ADCSOC1CTL.bit.CHSEL = 5; // ADC IN A5 pin666 j7
-  //  AdcaRegs.ADCSOC1CTL.bit.ACQPS = acqps; // sample window
-  //  AdcaRegs.ADCSOC1CTL.bit.TRIGSEL = TRIG_SEL_ePWM1_SOCA;    // event that trigger the adc, vide table 11-33
+    AdcaRegs.ADCSOC1CTL.bit.CHSEL = 5; // ADC IN A5 pin666 j7
+    AdcaRegs.ADCSOC1CTL.bit.ACQPS = acqps; // sample window
+    AdcaRegs.ADCSOC1CTL.bit.TRIGSEL = TRIG_SEL_ePWM1_SOCA;    // event that trigger the adc, vide table 11-33
 
     AdcaRegs.ADCINTSEL1N2.bit.INT1SEL = 0x01; //end of soc1 will se INT1 flag
     AdcaRegs.ADCINTSEL1N2.bit.INT1E = 1; // enable INT1 flag

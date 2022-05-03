@@ -1,6 +1,7 @@
 #include <SVPWM.h>
 #include "Peripheral_Setup.h"
 #include "math.h"
+#include <DCL_refgen.h>
 
 //interrupt function of ADC
 __interrupt void isr_adc(void);         //ADC interruption function
@@ -31,7 +32,13 @@ float teta = 0;
 float Ts = 100; //sample time
 float constant_vf=0;
 
+// *****************************************************************************/
+// Ramp declarations
+DCL_REFGEN rgen = DCL_REFGEN_DEFAULTS;
+DCL_CSS rgen_css = DCL_CSS_DEFAULTS;
 
+float32_t refW;
+float freq = 150.0f;
 
 // personal functions
 
@@ -126,6 +133,19 @@ int main(void){
             Setup_ADC();
             w_nom = 2*M_PI*60;
 
+            rgen.css = &rgen_css;
+            DCL_SET_CONTROLLER_PERIOD(&rgen,0.00001);
+
+            DCL_resetRefgen(&rgen);
+            DCL_setRefgenMode(&rgen, REFGEN_STATIC);
+            DCL_setRefgenFreq(&rgen, freq,0.0f);
+            DCL_setRefgenAmpl(&rgen,0.25f,0.0f);
+            DCL_setRefgenDuty(&rgen,0.01f);
+            DCL_setRefgenClamp(&rgen,2.0,-2.0);
+            DCL_setRefgenRamp(&rgen,0.5f,0.01f);
+            //DCL_setRefgenRamp(&rgen,100.0f,0.01f); //DCL_setRefgenRamp(&rgen,TARGET_LEVEL,RAMP_TIME)
+
+
             eNextState = end_init_goto_ON();
 
         }
@@ -139,6 +159,12 @@ int main(void){
             if(Shutdown_command == eNewEvent){
                 eNextState = goto_OFF();
             }
+
+            // GETS THE RAMP GENERATOR VALUE
+            DCL_runRefgen(&rgen);
+            V_alpha = DCL_getRefgenPhaseA(&rgen);
+
+
 
 
         }
@@ -179,8 +205,8 @@ __interrupt void isr_adc(void){
 
 
     teta = w_nom*index*(1/10000.0); //angle in function of time
-    V_alpha = cosf(teta);//2500;//cosf(2*M_PI*60*Ts*index*(1/1000000.0)-M_PI/2);
-    V_beta = cosf(teta+M_PI/2);
+    //V_alpha = 0.707*cosf(teta);//2500;//cosf(2*M_PI*60*Ts*index*(1/1000000.0)-M_PI/2);
+    V_beta = 0.707*cosf(teta+M_PI/2);
 
 
     svpwm_bi(&teta,&V_alpha,&V_beta,&wma,&wmb,&wmc);

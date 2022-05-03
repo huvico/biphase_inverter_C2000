@@ -14,6 +14,7 @@ ASM_SRCS += \
 ../F2837xD_usDelay.asm 
 
 C_SRCS += \
+../DCL_error.c \
 ../F2837xD_Adc.c \
 ../F2837xD_DefaultISR.c \
 ../F2837xD_GlobalVariableDefs.c \
@@ -27,6 +28,7 @@ C_SRCS += \
 ../main.c 
 
 C_DEPS += \
+./DCL_error.d \
 ./F2837xD_Adc.d \
 ./F2837xD_DefaultISR.d \
 ./F2837xD_GlobalVariableDefs.d \
@@ -40,6 +42,7 @@ C_DEPS += \
 ./main.d 
 
 OBJS += \
+./DCL_error.obj \
 ./F2837xD_Adc.obj \
 ./F2837xD_CodeStartBranch.obj \
 ./F2837xD_DefaultISR.obj \
@@ -59,6 +62,7 @@ ASM_DEPS += \
 ./F2837xD_usDelay.d 
 
 OBJS__QUOTED += \
+"DCL_error.obj" \
 "F2837xD_Adc.obj" \
 "F2837xD_CodeStartBranch.obj" \
 "F2837xD_DefaultISR.obj" \
@@ -74,6 +78,7 @@ OBJS__QUOTED += \
 "main.obj" 
 
 C_DEPS__QUOTED += \
+"DCL_error.d" \
 "F2837xD_Adc.d" \
 "F2837xD_DefaultISR.d" \
 "F2837xD_GlobalVariableDefs.d" \
@@ -91,6 +96,7 @@ ASM_DEPS__QUOTED += \
 "F2837xD_usDelay.d" 
 
 C_SRCS__QUOTED += \
+"../DCL_error.c" \
 "../F2837xD_Adc.c" \
 "../F2837xD_DefaultISR.c" \
 "../F2837xD_GlobalVariableDefs.c" \

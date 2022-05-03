@@ -72,6 +72,11 @@ main.obj: D:/ti/c2000/C2000Ware_3_04_00_00/device_support/f2837xd/common/include
 main.obj: D:/ti/c2000/C2000Ware_3_04_00_00/device_support/f2837xd/common/include/F2837xD_SysCtrl_defines.h
 main.obj: D:/ti/c2000/C2000Ware_3_04_00_00/device_support/f2837xd/common/include/F2837xD_Upp_defines.h
 main.obj: D:/ti/c2000/C2000Ware_3_04_00_00/device_support/f2837xd/common/include/F2837xD_defaultisr.h
+main.obj: D:/Mestrado/Biphase_inverter/DCL_refgen.h
+main.obj: D:/Mestrado/Biphase_inverter/DCL.h
+main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/complex.h
+main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/stdlib.h
+main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/stdlibf.h
 
 ../main.c:
 
@@ -216,4 +221,14 @@ D:/ti/c2000/C2000Ware_3_04_00_00/device_support/f2837xd/common/include/F2837xD_S
 D:/ti/c2000/C2000Ware_3_04_00_00/device_support/f2837xd/common/include/F2837xD_Upp_defines.h:
 
 D:/ti/c2000/C2000Ware_3_04_00_00/device_support/f2837xd/common/include/F2837xD_defaultisr.h:
+
+D:/Mestrado/Biphase_inverter/DCL_refgen.h:
+
+D:/Mestrado/Biphase_inverter/DCL.h:
+
+D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/complex.h:
+
+D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/stdlib.h:
+
+D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/stdlibf.h:
 
