@@ -20,6 +20,10 @@ static int setor;
 void svpwm_bi(float* teta, float* V_alpha, float* V_beta,float* wma,float* wmb,float* wmc){
 
     setor=6;
+    U1=1;
+    U2=1;
+    teta1=0;
+    teta2=280*M_PI/180;
 
     if ((*teta>=0.0)*(*teta<M_PI/4))
     {
@@ -98,7 +102,7 @@ void svpwm_bi(float* teta, float* V_alpha, float* V_beta,float* wma,float* wmb,f
         {
         *wma=1-toff/2-t1;
         *wmb=1-toff/2;
-        *wmc=toff/2-t1-t2;
+        *wmc=1-toff/2-t1-t2;
         }
     if (setor==6)
         {
