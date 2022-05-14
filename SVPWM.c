@@ -16,9 +16,36 @@ static float U1=1,U2=1,teta1=2*M_PI,teta2=1.5*M_PI;
 static float t1,t2,Uref,toff,k;
 static int setor;
 
+
 //svpwm_bi for two phase motor
 void svpwm_bi(float* teta, float* V_alpha, float* V_beta,float* wma,float* wmb,float* wmc){
 
+    //Calculates theta *******************************
+    Uref=sqrt((*V_alpha)*(*V_alpha)+(*V_beta)*(*V_beta));
+
+    if (Uref==0)
+    {
+         *teta=0;
+    }
+         else
+         {
+             *teta=acosf(abs((*V_alpha)/Uref));
+    }
+
+
+     if ((*V_alpha<0)&(*V_beta>0))
+        {
+         *teta=M_PI-*teta;
+        }
+     if ((*V_alpha<0)&&(*V_beta<0))
+     {
+         *teta=M_PI+*teta;
+     }
+     if ((*V_alpha>0)&&(*V_beta<0))
+     {
+         *teta=2*M_PI-*teta;
+     }
+//*******************************
     setor=6;
     U1=1;
     U2=1;

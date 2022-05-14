@@ -1,21 +1,17 @@
 # FIXED
 
 main.obj: ../main.c
-main.obj: D:/Mestrado/Biphase_inverter/SVPWM.h
-main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/math.h
-main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/_ti_config.h
-main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/linkage.h
-main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/_defs.h
-main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/sys/_types.h
-main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/sys/cdefs.h
-main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/machine/_types.h
-main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/machine/_limits.h
 main.obj: ../Peripheral_Setup.h
 main.obj: D:/ti/c2000/C2000Ware_3_04_00_00/device_support/f2837xd/common/include/F28x_Project.h
 main.obj: D:/ti/c2000/C2000Ware_3_04_00_00/device_support/f2837xd/common/include/F2837xD_Cla_typedefs.h
 main.obj: D:/ti/c2000/C2000Ware_3_04_00_00/device_support/f2837xd/headers/include/F2837xD_device.h
 main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/assert.h
+main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/_ti_config.h
+main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/linkage.h
 main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/stdarg.h
+main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/sys/_types.h
+main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/sys/cdefs.h
+main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/machine/_types.h
 main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/stdbool.h
 main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/stddef.h
 main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/stdint.h
@@ -72,31 +68,13 @@ main.obj: D:/ti/c2000/C2000Ware_3_04_00_00/device_support/f2837xd/common/include
 main.obj: D:/ti/c2000/C2000Ware_3_04_00_00/device_support/f2837xd/common/include/F2837xD_SysCtrl_defines.h
 main.obj: D:/ti/c2000/C2000Ware_3_04_00_00/device_support/f2837xd/common/include/F2837xD_Upp_defines.h
 main.obj: D:/ti/c2000/C2000Ware_3_04_00_00/device_support/f2837xd/common/include/F2837xD_defaultisr.h
-main.obj: D:/Mestrado/Biphase_inverter/DCL_refgen.h
-main.obj: D:/Mestrado/Biphase_inverter/DCL.h
-main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/complex.h
-main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/stdlib.h
-main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/stdlibf.h
+main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/math.h
+main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/_defs.h
+main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/machine/_limits.h
+main.obj: ../MicroScope.h
+main.obj: D:/Mestrado/Biphase_inverter/SVPWM.h
 
 ../main.c:
-
-D:/Mestrado/Biphase_inverter/SVPWM.h:
-
-D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/math.h:
-
-D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/_ti_config.h:
-
-D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/linkage.h:
-
-D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/_defs.h:
-
-D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/sys/_types.h:
-
-D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/sys/cdefs.h:
-
-D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/machine/_types.h:
-
-D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/machine/_limits.h:
 
 ../Peripheral_Setup.h:
 
@@ -108,7 +86,17 @@ D:/ti/c2000/C2000Ware_3_04_00_00/device_support/f2837xd/headers/include/F2837xD_
 
 D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/assert.h:
 
+D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/_ti_config.h:
+
+D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/linkage.h:
+
 D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/stdarg.h:
+
+D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/sys/_types.h:
+
+D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/sys/cdefs.h:
+
+D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/machine/_types.h:
 
 D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/stdbool.h:
 
@@ -222,13 +210,13 @@ D:/ti/c2000/C2000Ware_3_04_00_00/device_support/f2837xd/common/include/F2837xD_U
 
 D:/ti/c2000/C2000Ware_3_04_00_00/device_support/f2837xd/common/include/F2837xD_defaultisr.h:
 
-D:/Mestrado/Biphase_inverter/DCL_refgen.h:
+D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/math.h:
 
-D:/Mestrado/Biphase_inverter/DCL.h:
+D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/_defs.h:
 
-D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/complex.h:
+D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/machine/_limits.h:
 
-D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/stdlib.h:
+../MicroScope.h:
 
-D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/stdlibf.h:
+D:/Mestrado/Biphase_inverter/SVPWM.h:
 

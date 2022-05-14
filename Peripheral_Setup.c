@@ -32,6 +32,20 @@ void Setup_GPIO(void){
       GpioCtrlRegs.GPAMUX1.bit.GPIO4 = 1;  // GPIO4 = PWM3A
       GpioCtrlRegs.GPAMUX1.bit.GPIO5 = 1;  // GPIO5 = PWM3B
 
+
+      //configurar o gpio6 para medição de tempo
+      GpioCtrlRegs.GPAPUD.bit.GPIO6 = 0;   // Enable pullup on GPIO6, PIN 80, J8
+      GpioDataRegs.GPASET.bit.GPIO6 = 1;   // Load output latch
+      GpioCtrlRegs.GPAMUX1.bit.GPIO6 = 0;  // GPIO6 = GPIO6
+      GpioCtrlRegs.GPADIR.bit.GPIO6 = 1;   // GPIO6 = output
+
+      //configures eQEP GPIO10/pin67
+      GpioCtrlRegs.GPAPUD.bit.GPIO10 = 1;   //disable pull-up on GPIO10
+      GpioCtrlRegs.GPAQSEL1.bit.GPIO10 = 0; //sync GPIO10 to SYSCLK
+      GpioCtrlRegs.GPAGMUX1.bit.GPIO10 = 1; //configures GPIO10 as eQEP1A
+      GpioCtrlRegs.GPAGMUX1.bit.GPIO10 = 1; //configures GPIO10 as eQEP1A
+
+
       EDIS;
 
 }
@@ -152,6 +166,8 @@ void Setup_ADC(void){
         acqps = 63;//320ns
 
     EALLOW;
+
+    //GroupA
     CpuSysRegs.PCLKCR13.bit.ADC_A = 1; //enable the clock of group ADC A
     AdcaRegs.ADCCTL2.bit.PRESCALE = 6; //defines the ADCCLK
     AdcSetMode(ADC_ADCA, ADC_RESOLUTION_12BIT, ADC_SIGNALMODE_SINGLE); //configures the adcA
@@ -159,22 +175,58 @@ void Setup_ADC(void){
     AdcaRegs.ADCCTL1.bit.ADCPWDNZ = 1; // turns on the ADC
     DELAY_US(1000); // delay to power up the ADC
 
-    //define the channel - frequêncy ref
-    AdcaRegs.ADCSOC0CTL.bit.CHSEL = 3; // ADC IN A3 pin 26 j3
-    AdcaRegs.ADCSOC0CTL.bit.ACQPS = acqps; // sample window
-    AdcaRegs.ADCSOC0CTL.bit.TRIGSEL = TRIG_SEL_ePWM1_SOCA;
+    //Group B
+    CpuSysRegs.PCLKCR13.bit.ADC_B = 1; //enable the clock of group ADC A
+    AdcbRegs.ADCCTL2.bit.PRESCALE = 6; //defines the ADCCLK
+    AdcSetMode(ADC_ADCB, ADC_RESOLUTION_12BIT, ADC_SIGNALMODE_SINGLE); //configures the adcA
+    AdcbRegs.ADCCTL1.bit.INTPULSEPOS = 1;// defines the pulse interruptions as 1 puls before
+    AdcbRegs.ADCCTL1.bit.ADCPWDNZ = 1; // turns on the ADC
+    DELAY_US(1000); // delay to power up the ADC
+
+    //Group C
+    CpuSysRegs.PCLKCR13.bit.ADC_C = 1; //enable the clock of group ADC A
+    AdccRegs.ADCCTL2.bit.PRESCALE = 6; //defines the ADCCLK
+    AdcSetMode(ADC_ADCC, ADC_RESOLUTION_12BIT, ADC_SIGNALMODE_SINGLE); //configures the adcA
+    AdccRegs.ADCCTL1.bit.INTPULSEPOS = 1;// defines the pulse interruptions as 1 puls before
+    AdccRegs.ADCCTL1.bit.ADCPWDNZ = 1; // turns on the ADC
+    DELAY_US(1000); // delay to power up the ADC
+
+    //define the channel - frequency ref group A
+   // AdcaRegs.ADCSOC0CTL.bit.CHSEL = 3; // ADC IN A3 pin 26 j3
+    //AdcaRegs.ADCSOC0CTL.bit.ACQPS = acqps; // sample window
+    //AdcaRegs.ADCSOC0CTL.bit.TRIGSEL = TRIG_SEL_ePWM1_SOCA;
     //define the channel 4 - current measure 1
-    AdcaRegs.ADCSOC1CTL.bit.CHSEL = 4; // ADC IN A4 pin69 j7
-    AdcaRegs.ADCSOC1CTL.bit.ACQPS = acqps; // sample window
-    AdcaRegs.ADCSOC1CTL.bit.TRIGSEL = TRIG_SEL_ePWM1_SOCA;    // event that trigger the adc, vide table 11-33
+  //  AdcaRegs.ADCSOC1CTL.bit.CHSEL = 4; // ADC IN A4 pin69 j7
+  //  AdcaRegs.ADCSOC1CTL.bit.ACQPS = acqps; // sample window
+  //  AdcaRegs.ADCSOC1CTL.bit.TRIGSEL = TRIG_SEL_ePWM1_SOCA;    // event that trigger the adc, vide table 11-33
     //define the channel 5 - current measure 2
-    AdcaRegs.ADCSOC1CTL.bit.CHSEL = 5; // ADC IN A5 pin666 j7
+    AdcaRegs.ADCSOC1CTL.bit.CHSEL = 5; // ADC IN A5 pin66 j7
     AdcaRegs.ADCSOC1CTL.bit.ACQPS = acqps; // sample window
     AdcaRegs.ADCSOC1CTL.bit.TRIGSEL = TRIG_SEL_ePWM1_SOCA;    // event that trigger the adc, vide table 11-33
+
+    //define the channel - frequency ref group B
+    AdcbRegs.ADCSOC0CTL.bit.CHSEL = 4; // ADC IN A3 pin 26 j3
+    AdcbRegs.ADCSOC0CTL.bit.ACQPS = acqps; // sample window
+    AdcbRegs.ADCSOC0CTL.bit.TRIGSEL = TRIG_SEL_ePWM1_SOCA;
+
+    //define the channel - frequency ref group C
+    AdccRegs.ADCSOC0CTL.bit.CHSEL = 4; // ADC IN C4 pi67
+    AdccRegs.ADCSOC0CTL.bit.ACQPS = acqps; // sample window
+    AdccRegs.ADCSOC0CTL.bit.TRIGSEL = TRIG_SEL_ePWM1_SOCA;
+
+
 
     AdcaRegs.ADCINTSEL1N2.bit.INT1SEL = 0x01; //end of soc1 will se INT1 flag
     AdcaRegs.ADCINTSEL1N2.bit.INT1E = 1; // enable INT1 flag
     AdcaRegs.ADCINTFLGCLR.bit.ADCINT1 = 1; //clear INT1 flag
+
+    AdcbRegs.ADCINTSEL1N2.bit.INT1SEL = 0x01; //end of soc1 will se INT1 flag
+    AdcbRegs.ADCINTSEL1N2.bit.INT1E = 1; // enable INT1 flag
+    AdcbRegs.ADCINTFLGCLR.bit.ADCINT1 = 1; //clear INT1 flag
+
+    AdccRegs.ADCINTSEL1N2.bit.INT1SEL = 0x01; //end of soc1 will se INT1 flag
+    AdccRegs.ADCINTSEL1N2.bit.INT1E = 1; // enable INT1 flag
+    AdccRegs.ADCINTFLGCLR.bit.ADCINT1 = 1; //clear INT1 flag
 
     EDIS;
 
@@ -192,4 +244,24 @@ void Setup_DAC(void){
 
     EDIS;
 
+}
+
+void Setup_eQEP(void){
+    // pg 1978 spruhm8i.pdf - Technical reference
+
+    EALLOW;
+    CpuSysRegs.PCLKCR4.bit.EQEP1 = 1;   //enables the clock
+    EDIS;
+
+    EQep1Regs.QDECCTL.bit.QSRC = 2; // Up count mode (freq. measurement)
+    EQep1Regs.QDECCTL.bit.XCR = 0;  // 1x resolution: Count the rising edge only
+    EQep1Regs.QEPCTL.bit.FREE_SOFT = 2; // Position counter is unaffected by emulation suspend
+    //EQep1Regs.QEPCTL.bit.PCRM = 0;    // Position counter reset on an index event
+    EQep1Regs.QEPCTL.bit.QCLM = 1;      // Latch on unit time out
+    EQep1Regs.QEPCTL.bit.UTE = 1;       // Unit Timer Enable
+    EQep1Regs.QPOSMAX = eQEP_max_count;     // max count value
+    EQep1Regs.QEPCTL.bit.QPEN = 1;      // QEP enable
+   // EQep1Regs.QCAPCTL.bit.UPPS = 0x3;     // 1/8 for unit position
+   // EQep1Regs.QCAPCTL.bit.CCPS = 7;       // 1/128 for CAP clock
+    EQep1Regs.QCAPCTL.bit.CEN = 1;          // QEP Capture Enable
 }

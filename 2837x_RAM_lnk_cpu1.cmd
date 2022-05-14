@@ -62,6 +62,7 @@ SECTIONS
    .pinit           : > RAMM0,     PAGE = 0
    .switch          : > RAMM0,     PAGE = 0
    .reset           : > RESET,     PAGE = 0, TYPE = DSECT /* not used, */
+   dclfuncs			: > RAMGS10,   PAGE = 1 //configure to exclue warning #10247-D: creating output section "dclfuncs" without a SECTIONS specification
 
    .stack           : > RAMM1,     PAGE = 1
    .ebss            : > RAMLS5,    PAGE = 1
@@ -72,6 +73,7 @@ SECTIONS
    ramgs0           : > RAMGS0,    PAGE = 1
    ramgs1           : > RAMGS1,    PAGE = 1
    
+
    /* The following section definitions are required when using the IPC API Drivers */ 
     GROUP : > CPU1TOCPU2RAM, PAGE = 1 
     {

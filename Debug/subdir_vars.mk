@@ -16,12 +16,14 @@ ASM_SRCS += \
 C_SRCS += \
 ../DCL_error.c \
 ../F2837xD_Adc.c \
+../F2837xD_CpuTimers.c \
 ../F2837xD_DefaultISR.c \
 ../F2837xD_GlobalVariableDefs.c \
 ../F2837xD_Gpio.c \
 ../F2837xD_PieCtrl.c \
 ../F2837xD_PieVect.c \
 ../F2837xD_SysCtrl.c \
+../MicroScope.c \
 ../Peripheral_Setup.c \
 ../PiController.c \
 ../SVPWM.c \
@@ -30,12 +32,14 @@ C_SRCS += \
 C_DEPS += \
 ./DCL_error.d \
 ./F2837xD_Adc.d \
+./F2837xD_CpuTimers.d \
 ./F2837xD_DefaultISR.d \
 ./F2837xD_GlobalVariableDefs.d \
 ./F2837xD_Gpio.d \
 ./F2837xD_PieCtrl.d \
 ./F2837xD_PieVect.d \
 ./F2837xD_SysCtrl.d \
+./MicroScope.d \
 ./Peripheral_Setup.d \
 ./PiController.d \
 ./SVPWM.d \
@@ -45,6 +49,7 @@ OBJS += \
 ./DCL_error.obj \
 ./F2837xD_Adc.obj \
 ./F2837xD_CodeStartBranch.obj \
+./F2837xD_CpuTimers.obj \
 ./F2837xD_DefaultISR.obj \
 ./F2837xD_GlobalVariableDefs.obj \
 ./F2837xD_Gpio.obj \
@@ -52,6 +57,7 @@ OBJS += \
 ./F2837xD_PieVect.obj \
 ./F2837xD_SysCtrl.obj \
 ./F2837xD_usDelay.obj \
+./MicroScope.obj \
 ./Peripheral_Setup.obj \
 ./PiController.obj \
 ./SVPWM.obj \
@@ -65,6 +71,7 @@ OBJS__QUOTED += \
 "DCL_error.obj" \
 "F2837xD_Adc.obj" \
 "F2837xD_CodeStartBranch.obj" \
+"F2837xD_CpuTimers.obj" \
 "F2837xD_DefaultISR.obj" \
 "F2837xD_GlobalVariableDefs.obj" \
 "F2837xD_Gpio.obj" \
@@ -72,6 +79,7 @@ OBJS__QUOTED += \
 "F2837xD_PieVect.obj" \
 "F2837xD_SysCtrl.obj" \
 "F2837xD_usDelay.obj" \
+"MicroScope.obj" \
 "Peripheral_Setup.obj" \
 "PiController.obj" \
 "SVPWM.obj" \
@@ -80,12 +88,14 @@ OBJS__QUOTED += \
 C_DEPS__QUOTED += \
 "DCL_error.d" \
 "F2837xD_Adc.d" \
+"F2837xD_CpuTimers.d" \
 "F2837xD_DefaultISR.d" \
 "F2837xD_GlobalVariableDefs.d" \
 "F2837xD_Gpio.d" \
 "F2837xD_PieCtrl.d" \
 "F2837xD_PieVect.d" \
 "F2837xD_SysCtrl.d" \
+"MicroScope.d" \
 "Peripheral_Setup.d" \
 "PiController.d" \
 "SVPWM.d" \
@@ -98,12 +108,14 @@ ASM_DEPS__QUOTED += \
 C_SRCS__QUOTED += \
 "../DCL_error.c" \
 "../F2837xD_Adc.c" \
+"../F2837xD_CpuTimers.c" \
 "../F2837xD_DefaultISR.c" \
 "../F2837xD_GlobalVariableDefs.c" \
 "../F2837xD_Gpio.c" \
 "../F2837xD_PieCtrl.c" \
 "../F2837xD_PieVect.c" \
 "../F2837xD_SysCtrl.c" \
+"../MicroScope.c" \
 "../Peripheral_Setup.c" \
 "../PiController.c" \
 "../SVPWM.c" \

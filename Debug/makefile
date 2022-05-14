@@ -13,6 +13,7 @@ ORDERED_OBJS += \
 "./DCL_error.obj" \
 "./F2837xD_Adc.obj" \
 "./F2837xD_CodeStartBranch.obj" \
+"./F2837xD_CpuTimers.obj" \
 "./F2837xD_DefaultISR.obj" \
 "./F2837xD_GlobalVariableDefs.obj" \
 "./F2837xD_Gpio.obj" \
@@ -20,6 +21,7 @@ ORDERED_OBJS += \
 "./F2837xD_PieVect.obj" \
 "./F2837xD_SysCtrl.obj" \
 "./F2837xD_usDelay.obj" \
+"./MicroScope.obj" \
 "./Peripheral_Setup.obj" \
 "./PiController.obj" \
 "./SVPWM.obj" \
@@ -168,8 +170,8 @@ Biphase_inverter.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "DCL_error.obj" "F2837xD_Adc.obj" "F2837xD_CodeStartBranch.obj" "F2837xD_DefaultISR.obj" "F2837xD_GlobalVariableDefs.obj" "F2837xD_Gpio.obj" "F2837xD_PieCtrl.obj" "F2837xD_PieVect.obj" "F2837xD_SysCtrl.obj" "F2837xD_usDelay.obj" "Peripheral_Setup.obj" "PiController.obj" "SVPWM.obj" "main.obj" 
-	-$(RM) "DCL_error.d" "F2837xD_Adc.d" "F2837xD_DefaultISR.d" "F2837xD_GlobalVariableDefs.d" "F2837xD_Gpio.d" "F2837xD_PieCtrl.d" "F2837xD_PieVect.d" "F2837xD_SysCtrl.d" "Peripheral_Setup.d" "PiController.d" "SVPWM.d" "main.d" 
+	-$(RM) "DCL_error.obj" "F2837xD_Adc.obj" "F2837xD_CodeStartBranch.obj" "F2837xD_CpuTimers.obj" "F2837xD_DefaultISR.obj" "F2837xD_GlobalVariableDefs.obj" "F2837xD_Gpio.obj" "F2837xD_PieCtrl.obj" "F2837xD_PieVect.obj" "F2837xD_SysCtrl.obj" "F2837xD_usDelay.obj" "MicroScope.obj" "Peripheral_Setup.obj" "PiController.obj" "SVPWM.obj" "main.obj" 
+	-$(RM) "DCL_error.d" "F2837xD_Adc.d" "F2837xD_CpuTimers.d" "F2837xD_DefaultISR.d" "F2837xD_GlobalVariableDefs.d" "F2837xD_Gpio.d" "F2837xD_PieCtrl.d" "F2837xD_PieVect.d" "F2837xD_SysCtrl.d" "MicroScope.d" "Peripheral_Setup.d" "PiController.d" "SVPWM.d" "main.d" 
 	-$(RM) "F2837xD_CodeStartBranch.d" "F2837xD_usDelay.d" 
 	-@echo 'Finished clean'
 	-@echo ' '

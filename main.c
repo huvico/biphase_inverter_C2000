@@ -1,7 +1,16 @@
-#include <SVPWM.h>
+
 #include "Peripheral_Setup.h"
 #include "math.h"
-#include <DCL_refgen.h>
+//#include <DCL_refgen.h>
+#include "MicroScope.h"
+
+// *****************************************************************************/
+// Ramp declarations
+#define START_TIME_MACHINE 10.0f
+#define Ts 5000.0f //sample time in us,timmer interruption
+
+#include <SVPWM.h>
+DCL_REFGEN rgen = DCL_REFGEN_DEFAULTS;
 
 //interrupt function of ADC
 __interrupt void isr_adc(void);         //ADC interruption function
@@ -13,8 +22,10 @@ float f_switch=2;//switch frequency in kHz
 
 float adc1 = 0;
 float adc2 = 0;
+float adc3 = 0;
 float w_nom = 0;
-float Imax = 500000;
+float new_amp = 0.5;
+float Imax = 4;
 float soma = 0;
 float *p_adc = &adc1;
 float frequencia = 0;
@@ -22,27 +33,39 @@ uint32_t index = 0;
 float wma = 0;
 float wmb = 0;
 float wmc = 0;
+float modulo = 0;
+
+// *****************************************************************************/
+// velocity calculation
+unsigned long delta_pos = 0;
+unsigned int new_pos = 0, old_pos = 0;
+float rpm = 0;
+
+
 
 // *****************************************************************************/
 
-unsigned char send = 0, turn_off_command = 0, turn_on_command = 1;
-volatile float V_alpha = 0;
-volatile float V_beta = 0;
+unsigned char send = 0, turn_off_command = 0, turn_on_command = 0, set_new_ref = 0;
+volatile float V_alpha = 0.0;
+volatile float V_beta = 0.0;
 float teta = 0;
-float Ts = 100; //sample time
-float constant_vf=0;
+
 
 // *****************************************************************************/
-// Ramp declarations
-DCL_REFGEN rgen = DCL_REFGEN_DEFAULTS;
-DCL_CSS rgen_css = DCL_CSS_DEFAULTS;
+// Offset variables for current measurements
+Uint16 offset1, offset2, offset3;
 
-float32_t refW;
-float freq = 150.0f;
+// Microscope  *****************************************************************************/
+MicroScope scope;
+float buffer[MS_NUMBER_OF_CHANNELS][MS_BUFFER_SIZE];
+float bufferDisplay[MS_NUMBER_OF_CHANNELS][MS_BUFFER_SIZE];
 
+// *****************************************************************************/
 // personal functions
 
+
 void initialization();      //initialize the MCU basic setup
+void Calc_RPM();
 
 // State machine *****************************************************************************/
 //Different state of machine
@@ -75,6 +98,8 @@ eSystemState ini(void)
 
 eSystemState end_init_goto_ON(void)
 {
+    //enables interruptions
+
     EINT; // habilita a interrupção global
     ERTM; // Habilita alteração em tempo real de variaveis
     return ON;
@@ -82,6 +107,9 @@ eSystemState end_init_goto_ON(void)
 eSystemState goto_OFF(void) //shutdown PWM, for example..
 {
     DINT;           // Disable CPU __interrupts
+    EPwm1Regs.CMPA.bit.CMPA = 0;// fase main
+    EPwm2Regs.CMPA.bit.CMPA = 0; //fase comum
+    EPwm3Regs.CMPA.bit.CMPA = 0; //fase aux
     V_alpha = 0;
     V_beta = 0;
     return OFF;
@@ -107,17 +135,28 @@ eSystemState ReadEvent(void)
         return Shutdown_command;
     }
     if(turn_on_command == 1){
-   //     PieCtrlRegs.PIEIER1.bit.INTx7 = 1; // Habilita a interrupção do timer, vide tabela 3-4 do manual
+        EALLOW;
+        PieCtrlRegs.PIEIER1.bit.INTx7 = 1;
+        PieCtrlRegs.PIEIER1.bit.INTx1 = 1; // Enable ADC interruption
+        CpuTimer0Regs.TCR.all = 0x4001; // Habilita a interrupção do timer, vide table 3-22 Register File
+        PieCtrlRegs.PIEIER1.bit.INTx7 = 1; // Habilita a interrupção do timer, vide tabela 3-4 do manual
+        EDIS;
         return turnOn_command;
+    }
+    if(set_new_ref == 1){
+        DCL_setRefgen(&rgen,new_amp,2.0*M_PI*60.0, 2.0*M_PI*60.0*new_amp, START_TIME_MACHINE, 1.0/10000.0);
+        return turnOn_command;
+
     }
     return no_events;
 }
 
-
+eSystemEvent eNewEvent;
+eSystemState eNextState = INIT;
 int main(void){
 
-    eSystemState eNextState = INIT;
-    eSystemEvent eNewEvent;
+    //eSystemState eNextState = INIT;
+//    eSystemEvent eNewEvent;
     while(1)
     {
 
@@ -131,20 +170,14 @@ int main(void){
             Setup_GPIO();
             Setup_PWM();
             Setup_ADC();
-            w_nom = 2*M_PI*60;
-
-            rgen.css = &rgen_css;
-            DCL_SET_CONTROLLER_PERIOD(&rgen,0.00001);
+            Setup_eQEP();
+            w_nom = 2.0*M_PI*42.0;
 
             DCL_resetRefgen(&rgen);
-            DCL_setRefgenMode(&rgen, REFGEN_STATIC);
-            DCL_setRefgenFreq(&rgen, freq,0.0f);
-            DCL_setRefgenAmpl(&rgen,0.25f,0.0f);
-            DCL_setRefgenDuty(&rgen,0.01f);
-            DCL_setRefgenClamp(&rgen,2.0,-2.0);
-            DCL_setRefgenRamp(&rgen,0.5f,0.01f);
-            //DCL_setRefgenRamp(&rgen,100.0f,0.01f); //DCL_setRefgenRamp(&rgen,TARGET_LEVEL,RAMP_TIME)
+            DCL_setRefgen(&rgen,0.707,2.0*M_PI*60.0, w_nom, START_TIME_MACHINE, 1.0/10000.0);
 
+            offset1 = AdcaResultRegs.ADCRESULT1; //offset adc1
+            offset2 = AdcbResultRegs.ADCRESULT0; //offset adc2
 
             eNextState = end_init_goto_ON();
 
@@ -160,12 +193,6 @@ int main(void){
                 eNextState = goto_OFF();
             }
 
-            // GETS THE RAMP GENERATOR VALUE
-            DCL_runRefgen(&rgen);
-            V_alpha = DCL_getRefgenPhaseA(&rgen);
-
-
-
 
         }
         break;
@@ -174,8 +201,11 @@ int main(void){
             if(turnOn_command == eNewEvent)
             {
                 eNextState = end_init_goto_ON();
+                //enables interruptions
+                PieCtrlRegs.PIEIER1.bit.INTx7 = 1;
+                PieCtrlRegs.PIEIER1.bit.INTx1 = 1; // Enable ADC interruption
+                CpuTimer0Regs.TCR.all = 0x4001; // Habilita a interrupção do timer, vide table 3-22 Register File
             }
-     //       MS_saveData(&scope);
         }
         break;
         case ERROR:
@@ -184,6 +214,7 @@ int main(void){
             {
                // isr_adc();      //read current values
                 eNextState = end_init_goto_ON();
+
             }
         }
         break;
@@ -196,29 +227,38 @@ int main(void){
 
 // Interruptio ADC function
 __interrupt void isr_adc(void){
+    GpioDataRegs.GPASET.bit.GPIO6=1;
 
+
+    index = (index == 10000) ? 0 : (index+1);
     //load the adc result to the variables adc1 and adc2
-    adc1 = 2*w_nom*AdcaResultRegs.ADCRESULT0/4096;      //ADC INA3 - leitura da frequencia desejada
-    adc2 = 0;//2*Imax*AdcaResultRegs.ADCRESULT1/3400 - Imax ;   //ADC INA4
+    adc1 = 12.1621*(AdcaResultRegs.ADCRESULT1-offset1)/4096;      //ADC INA3 - leitura da corrente 1, PIN66
+    adc2 = 12.1621*(AdcbResultRegs.ADCRESULT0-offset2)/4096;//2*Imax*AdcaResultRegs.ADCRESULT1/3400 - Imax ;   //ADC INB4, pin68
+    adc3 = 118.64*(AdccResultRegs.ADCRESULT5-offset3)/4096;
 
-    index = (index == 62800) ? 0 : (index+1);
+    run_Refgen(&rgen,&V_alpha, &V_beta);
+    modulo=sqrt(V_alpha*(V_alpha)+V_beta*(V_beta));
 
-
-    teta = w_nom*index*(1/10000.0); //angle in function of time
-    //V_alpha = 0.707*cosf(teta);//2500;//cosf(2*M_PI*60*Ts*index*(1/1000000.0)-M_PI/2);
-    V_beta = 0.707*cosf(teta+M_PI/2);
-
-
-    svpwm_bi(&teta,&V_alpha,&V_beta,&wma,&wmb,&wmc);
+    svpwm_bi(&teta, &V_alpha,&V_beta,&wma,&wmb,&wmc);
 
     EPwm1Regs.CMPA.bit.CMPA = wma*SWITCH_PERIOD;// fase main
     EPwm2Regs.CMPA.bit.CMPA = wmb*SWITCH_PERIOD; //fase comum
     EPwm3Regs.CMPA.bit.CMPA = wmc*SWITCH_PERIOD; //fase aux
 
+    GpioDataRegs.GPACLEAR.bit.GPIO6=1;
+
 
     AdcaRegs.ADCINTFLGCLR.bit.ADCINT1 = 1;
+    AdcbRegs.ADCINTFLGCLR.bit.ADCINT1 = 1;
+    AdccRegs.ADCINTFLGCLR.bit.ADCINT1 = 1;
     PieCtrlRegs.PIEACK.all = PIEACK_GROUP1;
 
+}
+
+__interrupt void isr_cpu_timer0(void){
+    Calc_RPM();
+
+    PieCtrlRegs.PIEACK.all = PIEACK_GROUP1;
 }
 
 void initialization(){
@@ -238,11 +278,26 @@ void initialization(){
          IpcRegs.IPCCLR.all = 0xFFFFFFFF;        // Clear IPC Flags
 
          EALLOW;
+         PieVectTable.TIMER0_INT = &isr_cpu_timer0; //endereço da função de interrupção
          PieVectTable.ADCA1_INT = &isr_adc; // Memory Address of interruption function ADC
          EDIS;
-         PieCtrlRegs.PIEIER1.bit.INTx1 = 1; // Enable ADC interruption
+         //PieCtrlRegs.PIEIER1.bit.INTx7 = 1;
+         //PieCtrlRegs.PIEIER1.bit.INTx1 = 1; // Enable ADC interruption
          IER |= M_INT1;
 
-         //SWITCH_PERIOD=200000/(4*f_switch));//calculates PRD to configures switch period. If isnt up and down, chage to 200000/(2*f_switch)
+         InitCpuTimers();
+         ConfigCpuTimer(&CpuTimer0, 200, Ts); //Escolhe o timer, frequência em MHz e periodo em us
+         CpuTimer0Regs.TCR.all = 0x4001; // Habilita a interrupção do timer, vide table 3-22 Register File
 
+
+}
+
+void Calc_RPM(){
+    if(EQep1Regs.QFLG.bit.UTO){             // Unit Timeout event
+        new_pos = EQep1Regs.QPOSLAT;        // Latched POSCNT value
+        delta_pos = (new_pos > old_pos) ? (new_pos-old_pos) : ((eQEP_max_count-old_pos) + new_pos);
+        old_pos = new_pos;
+        EQep1Regs.QCLR.bit.UTO = 1;
+    }
+    rpm = ((float)(delta_pos)) * INT_TIMMER_RPM * 60.0;
 }
