@@ -56,6 +56,8 @@ static inline void DCL_resetRefgen(DCL_REFGEN *p)
     p->ya = 0.0f;
     p->yb = 0.0f;
     p->status = 0;
+    p->umax = 0.707;
+    p->umin = 0.707;
 }
 
 static inline void DCL_setRefgen(DCL_REFGEN *p,float32_t final_ampl,float32_t freq_nom, float32_t final_freq, float32_t ramp_time, float32_t sample_time)

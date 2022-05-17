@@ -19,7 +19,7 @@ static int setor;
 
 //svpwm_bi for two phase motor
 void svpwm_bi(float* teta, float* V_alpha, float* V_beta,float* wma,float* wmb,float* wmc){
-
+/*
     //Calculates theta *******************************
     Uref=sqrt((*V_alpha)*(*V_alpha)+(*V_beta)*(*V_beta));
 
@@ -31,6 +31,7 @@ void svpwm_bi(float* teta, float* V_alpha, float* V_beta,float* wma,float* wmb,f
          {
              *teta=acosf(abs((*V_alpha)/Uref));
     }
+
 
 
      if ((*V_alpha<0)&(*V_beta>0))
@@ -45,97 +46,98 @@ void svpwm_bi(float* teta, float* V_alpha, float* V_beta,float* wma,float* wmb,f
      {
          *teta=2*M_PI-*teta;
      }
+     */
 //*******************************
     setor=6;
-    U1=1;
-    U2=1;
-    teta1=0;
-    teta2=280*M_PI/180;
+    U1=1.0;
+    U2=1.0;
+    teta1=0.0;
+    teta2=280.0*M_PI/180.0;
 
     if ((*teta>=0.0)*(*teta<M_PI/4))
     {
-        U1=1;
-        U2=sqrtf(2);
+        U1=1.0;
+        U2=sqrtf(2.0);
         teta1=0;
-        teta2=M_PI/4;
+        teta2=M_PI/4.0;
         setor=1;
     }
     if ((*teta>=M_PI/4)*(*teta<M_PI/2))
     {
-        U1=1;
-        U2=sqrtf(2);
-        teta1=M_PI/2;
-        teta2=M_PI/4;
+        U1=1.0;
+        U2=sqrtf(2.0);
+        teta1=M_PI/2.0;
+        teta2=M_PI/4.0;
         setor=2;
     }
     if ((*teta>=M_PI/2)*(*teta<M_PI))
             {
-        U1=1;
-        U2=1;
-        teta1=M_PI/2;
+        U1=1.0;
+        U2=1.0;
+        teta1=M_PI/2.0;
         teta2=M_PI;
         setor=3;
     }
     if ((*teta>=M_PI)*(*teta<5*M_PI/4))
     {
-        U1=sqrtf(2);
-        U2=1;
+        U1=sqrtf(2.0);
+        U2=1.0;
         teta1=M_PI*1.25;
         teta2=M_PI;
         setor=4;
     }
     if ((*teta>=5*M_PI/4)*(*teta<3*M_PI/2))
         {
-        U1=sqrtf(2);
-        U2=1;
+        U1=sqrtf(2.0);
+        U2=1.0;
         teta1=M_PI*1.25;
         teta2=M_PI*1.5;
         setor=5;
         }
 
 
-    Uref = sqrtf(powf(*V_alpha,2)+powf(*V_beta,2));//*V_alpha*(*V_alpha)+*V_beta*(*V_beta));
+    Uref = sqrtf(*V_alpha*(*V_alpha)+*V_beta*(*V_beta));//powf(*V_alpha,2)+powf(*V_beta,2));//*V_alpha*(*V_alpha)+*V_beta*(*V_beta));
 
-    t1=(Uref/U1)*(sin(teta2-*teta)/sin(teta2-teta1));
-    t2=(Uref/U2)*(sin(*teta-teta1)/sin(teta2-teta1));
-    toff=1-t1-t2;
+    t1=(Uref/U1)*(sinf(teta2-*teta)/sinf(teta2-teta1));
+    t2=(Uref/U2)*(sinf(*teta-teta1)/sinf(teta2-teta1));
+    toff=1.0-t1-t2;
 
 
     if (setor==1)
         {
-        *wma=1-toff/2;
-        *wmb=1-toff/2-t1-t2;
-        *wmc=1-toff/2-t1;
+        *wma=1-toff/2.0;
+        *wmb=1-toff/2.0-t1-t2;
+        *wmc=1-toff/2.0-t1;
         }
     if (setor==2)
         {
-        *wma=1-toff/2-t1;
-        *wmb=1-toff/2-t1-t2;
-        *wmc=1-toff/2;
+        *wma=1-toff/2.0-t1;
+        *wmb=1-toff/2.0-t1-t2;
+        *wmc=1-toff/2.0;
         }
     if (setor==3)
         {
-        *wma=1-toff/2-t1-t2;
-        *wmb=1-toff/2-t1;
-        *wmc=1-toff/2;
+        *wma=1-toff/2.0-t1-t2;
+        *wmb=1-toff/2.0-t1;
+        *wmc=1-toff/2.0;
         }
     if (setor==4)
         {
-        *wma=1-toff/2-t1-t2;
-        *wmb=1-toff/2;
-        *wmc=1-toff/2-t1;
+        *wma=1-toff/2.0-t1-t2;
+        *wmb=1-toff/2.0;
+        *wmc=1-toff/2.0-t1;
         }
     if (setor==5)
         {
-        *wma=1-toff/2-t1;
-        *wmb=1-toff/2;
-        *wmc=1-toff/2-t1-t2;
+        *wma=1-toff/2.0-t1;
+        *wmb=1-toff/2.0;
+        *wmc=1-toff/2.0-t1-t2;
         }
     if (setor==6)
         {
-        *wma=1-toff/2;
-        *wmb=1-toff/2-t1;
-        *wmc=1-toff/2-t1-t2;
+        *wma=1-toff/2.0;
+        *wmb=1-toff/2.0-t1;
+        *wmc=1-toff/2.0-t1-t2;
         }
 
 }

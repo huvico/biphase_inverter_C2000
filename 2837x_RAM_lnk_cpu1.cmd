@@ -62,11 +62,11 @@ SECTIONS
    .pinit           : > RAMM0,     PAGE = 0
    .switch          : > RAMM0,     PAGE = 0
    .reset           : > RESET,     PAGE = 0, TYPE = DSECT /* not used, */
-   dclfuncs			: > RAMGS10,   PAGE = 1 //configure to exclue warning #10247-D: creating output section "dclfuncs" without a SECTIONS specification
+   //dclfuncs			: > RAMGS10,   PAGE = 1 //configure to exclue warning #10247-D: creating output section "dclfuncs" without a SECTIONS specification
 
    .stack           : > RAMM1,     PAGE = 1
    .ebss            : > RAMLS5,    PAGE = 1
-   .econst          : > RAMLS5,    PAGE = 1
+   .econst          : > RAMLS5 | RAMGS10,    PAGE = 1
    .esysmem         : > RAMLS5,    PAGE = 1
    Filter_RegsFile  : > RAMGS0,	   PAGE = 1
 

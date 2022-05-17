@@ -19,18 +19,27 @@ void Setup_GPIO(void){
       // Enable PWM1-3
       //
       EALLOW;
-      GpioCtrlRegs.GPAPUD.bit.GPIO0 = 0;   // Enable pullup on GPIO0
-      GpioCtrlRegs.GPAPUD.bit.GPIO1 = 0;   // Enable pullup on GPIO1
-      GpioCtrlRegs.GPAPUD.bit.GPIO2 = 0;   // Enable pullup on GPIO2
-      GpioCtrlRegs.GPAPUD.bit.GPIO3 = 0;   // Enable pullup on GPIO3
-      GpioCtrlRegs.GPAPUD.bit.GPIO4 = 0;   // Enable pullup on GPIO4
-      GpioCtrlRegs.GPAPUD.bit.GPIO5 = 0;   // Enable pullup on GPIO5
+
+      GpioCtrlRegs.GPAGMUX1.bit.GPIO0 = 0;
+      GpioCtrlRegs.GPAGMUX1.bit.GPIO1 = 0;
+      GpioCtrlRegs.GPAGMUX1.bit.GPIO2 = 0;
+      GpioCtrlRegs.GPAGMUX1.bit.GPIO3 = 0;
+      GpioCtrlRegs.GPAGMUX1.bit.GPIO4 = 0;
+      GpioCtrlRegs.GPAGMUX1.bit.GPIO5 = 0;
+
       GpioCtrlRegs.GPAMUX1.bit.GPIO0 = 1;  // GPIO0 = PWM1A
       GpioCtrlRegs.GPAMUX1.bit.GPIO1 = 1;  // GPIO1 = PWM1B
       GpioCtrlRegs.GPAMUX1.bit.GPIO2 = 1;  // GPIO2 = PWM2A
       GpioCtrlRegs.GPAMUX1.bit.GPIO3 = 1;  // GPIO3 = PWM2B
       GpioCtrlRegs.GPAMUX1.bit.GPIO4 = 1;  // GPIO4 = PWM3A
       GpioCtrlRegs.GPAMUX1.bit.GPIO5 = 1;  // GPIO5 = PWM3B
+
+      GpioCtrlRegs.GPAPUD.bit.GPIO0 = 1;   // 0 Enable, 1 Disable pullup on GPIO0
+      GpioCtrlRegs.GPAPUD.bit.GPIO1 = 1;   // Enable pullup on GPIO1
+      GpioCtrlRegs.GPAPUD.bit.GPIO2 = 1;   // Enable pullup on GPIO2
+      GpioCtrlRegs.GPAPUD.bit.GPIO3 = 1;   // Enable pullup on GPIO3
+      GpioCtrlRegs.GPAPUD.bit.GPIO4 = 1;   // Enable pullup on GPIO4
+      GpioCtrlRegs.GPAPUD.bit.GPIO5 = 1;   // Enable pullup on GPIO5
 
 
       //configurar o gpio6 para medição de tempo
@@ -52,8 +61,10 @@ void Setup_GPIO(void){
 
 void Setup_PWM(void){
     EALLOW;
-    CpuSysRegs.PCLKCR2.bit.EPWM1 = 1; // habilita o clock do pwm 1
     CpuSysRegs.PCLKCR0.bit.TBCLKSYNC = 0; // disable the sync clock
+    CpuSysRegs.PCLKCR2.bit.EPWM1 = 1; // Enables PWM1 clock
+    CpuSysRegs.PCLKCR2.bit.EPWM2 = 1; // Enables PWM2 clock
+    CpuSysRegs.PCLKCR2.bit.EPWM3 = 1; // Enables PWM3 clock
 
     //Setup PWM1 ============================================================================================
     EPwm1Regs.TBPRD = SWITCH_PERIOD; // Set the timer period
@@ -67,7 +78,7 @@ void Setup_PWM(void){
     EPwm1Regs.TBCTL.bit.CLKDIV = TB_DIV1; // divide the clock, usual to slow pwm... like 20 Hz for example
 
     EPwm1Regs.CMPCTL.bit.SHDWAMODE = CC_SHADOW; // set when the width is altered
-    EPwm1Regs.CMPCTL.bit.LOADAMODE = CC_CTR_ZERO_PRD;
+    EPwm1Regs.CMPCTL.bit.LOADAMODE = CC_CTR_ZERO_PRD; //CC_CTR_ZERO_PRD: zero and prd
     EPwm1Regs.CMPCTL.bit.SHDWBMODE = CC_SHADOW;
     EPwm1Regs.CMPCTL.bit.LOADBMODE = CC_CTR_ZERO_PRD;
 
@@ -79,13 +90,14 @@ void Setup_PWM(void){
 
     EPwm1Regs.DBCTL.bit.OUT_MODE = DB_FULL_ENABLE; // enable Dead-band module (turn-on delay + rise time)
     EPwm1Regs.DBCTL.bit.POLSEL = DB_ACTV_HIC; // active hi complementary
-    EPwm1Regs.DBFED.bit.DBFED = RISE_TIME; // rise time FED = 20 TBCLKs
-    EPwm1Regs.DBRED.bit.DBRED = FALL_TIME; // fall
-    //ativar o trigger do pwm
-    EPwm1Regs.ETSEL.bit.SOCAEN = 1;//enable SOC on A group
-    EPwm1Regs.ETSEL.bit.SOCASEL = ET_CTR_PRD;//ET_CTR_PRDZERO; // TRIGGER ZERO AND PRD, onde dispara o evento
-    EPwm1Regs.ETPS.bit.SOCAPRD = ET_1ST; // trigger on every event
+    EPwm1Regs.DBFED.bit.DBFED = FALL_TIME; // rise time FED = 20 TBCLKs
+    EPwm1Regs.DBRED.bit.DBRED = RISE_TIME; // fall
 
+    // activate the PWM1 trigger to ADC********************************
+    EPwm1Regs.ETSEL.bit.SOCAEN = 1;//enable SOC on A group
+    EPwm1Regs.ETSEL.bit.SOCASEL = ET_CTR_PRDZERO;//ET_CTR_PRDZERO; // TRIGGER ZERO AND PRD, onde dispara o evento
+    EPwm1Regs.ETPS.bit.SOCAPRD = ET_1ST; // trigger on every event, this way, the sample frequency is 2xFpwm
+    // ****************************************************************
 
     //Setup PWM2 ============================================================================================
     EPwm2Regs.TBPRD = SWITCH_PERIOD; // Set the timer period
@@ -111,12 +123,8 @@ void Setup_PWM(void){
 
     EPwm2Regs.DBCTL.bit.OUT_MODE = DB_FULL_ENABLE; // enable Dead-band module (turn-on delay + rise time)
     EPwm2Regs.DBCTL.bit.POLSEL = DB_ACTV_HIC; // active hi complementary
-    EPwm2Regs.DBFED.bit.DBFED = RISE_TIME; // rise time FED = 20 TBCLKs
-    EPwm2Regs.DBRED.bit.DBRED = FALL_TIME; // fall
-    //ativar o trigger do pwm
-    EPwm2Regs.ETSEL.bit.SOCAEN = 1;//enable SOC on A group
-    EPwm2Regs.ETSEL.bit.SOCASEL = ET_CTR_PRDZERO; // TRIGGER ZERO AND PRD, onde dispara o evento
-    EPwm2Regs.ETPS.bit.SOCAPRD = ET_1ST; // trigger on every event
+    EPwm2Regs.DBFED.bit.DBFED = FALL_TIME; // rise time FED = 20 TBCLKs
+    EPwm2Regs.DBRED.bit.DBRED = RISE_TIME; // fall
 
     //Setup PWM3 ============================================================================================
     EPwm3Regs.TBPRD = SWITCH_PERIOD; // Set the timer period
@@ -142,14 +150,9 @@ void Setup_PWM(void){
 
     EPwm3Regs.DBCTL.bit.OUT_MODE = DB_FULL_ENABLE; // enable Dead-band module (turn-on delay + rise time)
     EPwm3Regs.DBCTL.bit.POLSEL = DB_ACTV_HIC; // active hi complementary
-    EPwm3Regs.DBFED.bit.DBFED = RISE_TIME; // rise time FED = 20 TBCLKs
-    EPwm3Regs.DBRED.bit.DBRED = FALL_TIME; // fall
+    EPwm3Regs.DBFED.bit.DBFED = FALL_TIME; // rise time FED = 20 TBCLKs
+    EPwm3Regs.DBRED.bit.DBRED = RISE_TIME; // fall
 
-
-    //ativar o trigger do pwm
- //   EPwm3Regs.ETSEL.bit.SOCAEN = 1;//enable SOC on A group
- //   EPwm3Regs.ETSEL.bit.SOCASEL = ET_CTR_PRDZERO; // TRIGGER ZERO AND PRD, onde dispara o evento
- //   EPwm3Regs.ETPS.bit.SOCAPRD = ET_1ST; // trigger on every event
 
     CpuSysRegs.PCLKCR0.bit.TBCLKSYNC = 1;
     EDIS;
@@ -175,21 +178,47 @@ void Setup_ADC(void){
     AdcaRegs.ADCCTL1.bit.ADCPWDNZ = 1; // turns on the ADC
     DELAY_US(1000); // delay to power up the ADC
 
+    /*
+    2 is PIN29 J3(dont use!is shorted to VrefHIB,3V)
+    3 is pin26 J3
+    4 is PIN69 J7
+    5 is the ADC IN A5 pin66 j7
+    */
+
+    AdcaRegs.ADCSOC0CTL.bit.CHSEL = 3;
+    AdcaRegs.ADCSOC0CTL.bit.ACQPS = acqps; // sample window
+    AdcaRegs.ADCSOC0CTL.bit.TRIGSEL = TRIG_SEL_ePWM1_SOCA;    // event that trigger the adc, vide table 11-33
+
+    AdcaRegs.ADCSOC1CTL.bit.CHSEL = 4;
+    AdcaRegs.ADCSOC1CTL.bit.ACQPS = acqps; // sample window
+    AdcaRegs.ADCSOC1CTL.bit.TRIGSEL = TRIG_SEL_ePWM1_SOCA;    // event that trigger the adc, vide table 11-33
+
+    AdcaRegs.ADCSOC2CTL.bit.CHSEL = 5;
+    AdcaRegs.ADCSOC2CTL.bit.ACQPS = acqps; // sample window
+    AdcaRegs.ADCSOC2CTL.bit.TRIGSEL = TRIG_SEL_ePWM1_SOCA;    // event that trigger the adc, vide table 11-33
+
+    AdcaRegs.ADCINTSEL1N2.bit.INT1SEL = 0x02; //end of soc1 will se INT1 flag, depends how much channels in use
+    AdcaRegs.ADCINTSEL1N2.bit.INT1E = 1; // enable INT1 flag
+    AdcaRegs.ADCINTFLGCLR.bit.ADCINT1 = 1; //clear INT1 flag
+
+    /*
     //Group B
     CpuSysRegs.PCLKCR13.bit.ADC_B = 1; //enable the clock of group ADC A
     AdcbRegs.ADCCTL2.bit.PRESCALE = 6; //defines the ADCCLK
     AdcSetMode(ADC_ADCB, ADC_RESOLUTION_12BIT, ADC_SIGNALMODE_SINGLE); //configures the adcA
     AdcbRegs.ADCCTL1.bit.INTPULSEPOS = 1;// defines the pulse interruptions as 1 puls before
     AdcbRegs.ADCCTL1.bit.ADCPWDNZ = 1; // turns on the ADC
-    DELAY_US(1000); // delay to power up the ADC
+    DELAY_US(1000); // delay to power up the ADC */
 
+/*
     //Group C
     CpuSysRegs.PCLKCR13.bit.ADC_C = 1; //enable the clock of group ADC A
-    AdccRegs.ADCCTL2.bit.PRESCALE = 6; //defines the ADCCLK
+    AdccRegs.ADCCTL2.bit.PRESCALE = 1; //defines the ADCCLK
     AdcSetMode(ADC_ADCC, ADC_RESOLUTION_12BIT, ADC_SIGNALMODE_SINGLE); //configures the adcA
     AdccRegs.ADCCTL1.bit.INTPULSEPOS = 1;// defines the pulse interruptions as 1 puls before
     AdccRegs.ADCCTL1.bit.ADCPWDNZ = 1; // turns on the ADC
     DELAY_US(1000); // delay to power up the ADC
+*/
 
     //define the channel - frequency ref group A
    // AdcaRegs.ADCSOC0CTL.bit.CHSEL = 3; // ADC IN A3 pin 26 j3
@@ -200,10 +229,7 @@ void Setup_ADC(void){
   //  AdcaRegs.ADCSOC1CTL.bit.ACQPS = acqps; // sample window
   //  AdcaRegs.ADCSOC1CTL.bit.TRIGSEL = TRIG_SEL_ePWM1_SOCA;    // event that trigger the adc, vide table 11-33
     //define the channel 5 - current measure 2
-    AdcaRegs.ADCSOC1CTL.bit.CHSEL = 5; // ADC IN A5 pin66 j7
-    AdcaRegs.ADCSOC1CTL.bit.ACQPS = acqps; // sample window
-    AdcaRegs.ADCSOC1CTL.bit.TRIGSEL = TRIG_SEL_ePWM1_SOCA;    // event that trigger the adc, vide table 11-33
-
+    /*
     //define the channel - frequency ref group B
     AdcbRegs.ADCSOC0CTL.bit.CHSEL = 4; // ADC IN A3 pin 26 j3
     AdcbRegs.ADCSOC0CTL.bit.ACQPS = acqps; // sample window
@@ -212,27 +238,28 @@ void Setup_ADC(void){
     //define the channel - frequency ref group C
     AdccRegs.ADCSOC0CTL.bit.CHSEL = 4; // ADC IN C4 pi67
     AdccRegs.ADCSOC0CTL.bit.ACQPS = acqps; // sample window
-    AdccRegs.ADCSOC0CTL.bit.TRIGSEL = TRIG_SEL_ePWM1_SOCA;
+    AdccRegs.ADCSOC0CTL.bit.TRIGSEL = TRIG_SEL_ePWM1_SOCA;*/
 
 
 
-    AdcaRegs.ADCINTSEL1N2.bit.INT1SEL = 0x01; //end of soc1 will se INT1 flag
-    AdcaRegs.ADCINTSEL1N2.bit.INT1E = 1; // enable INT1 flag
-    AdcaRegs.ADCINTFLGCLR.bit.ADCINT1 = 1; //clear INT1 flag
 
+    /*
     AdcbRegs.ADCINTSEL1N2.bit.INT1SEL = 0x01; //end of soc1 will se INT1 flag
     AdcbRegs.ADCINTSEL1N2.bit.INT1E = 1; // enable INT1 flag
     AdcbRegs.ADCINTFLGCLR.bit.ADCINT1 = 1; //clear INT1 flag
 
+
     AdccRegs.ADCINTSEL1N2.bit.INT1SEL = 0x01; //end of soc1 will se INT1 flag
     AdccRegs.ADCINTSEL1N2.bit.INT1E = 1; // enable INT1 flag
     AdccRegs.ADCINTFLGCLR.bit.ADCINT1 = 1; //clear INT1 flag
+*/
 
     EDIS;
 
 }
 
 void Setup_DAC(void){
+    /*
     EALLOW;
     CpuSysRegs.PCLKCR16.bit.DAC_A = 1; //
     DacaRegs.DACCTL.bit.SYNCSEL = 0x00; //PWM
@@ -243,6 +270,7 @@ void Setup_DAC(void){
     DacaRegs.DACLOCK.all = 0x00;
 
     EDIS;
+    */
 
 }
 
