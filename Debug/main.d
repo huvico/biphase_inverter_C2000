@@ -71,7 +71,7 @@ main.obj: D:/ti/c2000/C2000Ware_3_04_00_00/device_support/f2837xd/common/include
 main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/math.h
 main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/_defs.h
 main.obj: D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/machine/_limits.h
-main.obj: ../MicroScope.h
+main.obj: ../Variables.h
 main.obj: D:/Mestrado/Biphase_inverter/SVPWM.h
 
 ../main.c:
@@ -216,7 +216,7 @@ D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/_defs.h:
 
 D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include/machine/_limits.h:
 
-../MicroScope.h:
+../Variables.h:
 
 D:/Mestrado/Biphase_inverter/SVPWM.h:
 

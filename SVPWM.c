@@ -15,7 +15,7 @@
 static float U1=1,U2=1,teta1=2*M_PI,teta2=1.5*M_PI;
 static float t1,t2,Uref,toff,k;
 static int setor;
-
+extern float V_alpha, V_beta, teta;
 
 //svpwm_bi for two phase motor
 void svpwm_bi(float* teta, float* V_alpha, float* V_beta,float* wma,float* wmb,float* wmc){

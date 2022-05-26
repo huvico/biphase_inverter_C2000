@@ -52,8 +52,29 @@ void Setup_GPIO(void){
       GpioCtrlRegs.GPAPUD.bit.GPIO10 = 1;   //disable pull-up on GPIO10
       GpioCtrlRegs.GPAQSEL1.bit.GPIO10 = 0; //sync GPIO10 to SYSCLK
       GpioCtrlRegs.GPAGMUX1.bit.GPIO10 = 1; //configures GPIO10 as eQEP1A
-      GpioCtrlRegs.GPAGMUX1.bit.GPIO10 = 1; //configures GPIO10 as eQEP1A
+      GpioCtrlRegs.GPAMUX1.bit.GPIO10 = 1; //configures GPIO10 as eQEP1A
 
+      /*
+      //eQEP config
+      GpioCtrlRegs.GPAPUD.bit.GPIO20 = 1; // Disable GPIO20 pull-up (EQEP1A)
+      GpioCtrlRegs.GPAPUD.bit.GPIO21 = 1; // Disable GPIO21 pull-up (EQEP1B)
+      GpioCtrlRegs.GPAPUD.bit.GPIO22 = 1; // Disable GPIO22 pull-up (EQEP1S)
+      GpioCtrlRegs.GPAPUD.bit.GPIO23 = 1; // Disable GPIO23 pull-up (EQEP1I)
+      //The GPIOs have to be synchronized with the system clock:
+      GpioCtrlRegs.GPAQSEL2.bit.GPIO20 = 0; // Sync GPIO20 to SYSCLK (EQEP1A)
+      GpioCtrlRegs.GPAQSEL2.bit.GPIO21 = 0; // Sync GPIO21 to SYSCLK (EQEP1B)
+      GpioCtrlRegs.GPAQSEL2.bit.GPIO22 = 0; // Sync GPIO22 to SYSCLK (EQEP1S)
+      GpioCtrlRegs.GPAQSEL2.bit.GPIO23 = 0; // Sync GPIO23 to SYSCLK (EQEP1I)
+      //Each GPIO that is going to be used has to be configured as an eQEP input:
+      GpioCtrlRegs.GPAGMUX2.bit.GPIO20 = 0; // Configure GPIO20 as EQEP1A
+      GpioCtrlRegs.GPAGMUX2.bit.GPIO21 = 0; // Configure GPIO21 as EQEP1B
+      GpioCtrlRegs.GPAGMUX2.bit.GPIO22 = 0; // Configure GPIO22 as EQEP1S
+      GpioCtrlRegs.GPAGMUX2.bit.GPIO23 = 0; // Configure GPIO23 as EQEP1I
+      GpioCtrlRegs.GPAMUX2.bit.GPIO20 = 1; // Configure GPIO20 as EQEP1A
+      GpioCtrlRegs.GPAMUX2.bit.GPIO21 = 1; // Configure GPIO21 as EQEP1B
+      GpioCtrlRegs.GPAMUX2.bit.GPIO22 = 1; // Configure GPIO22 as EQEP1S
+      GpioCtrlRegs.GPAMUX2.bit.GPIO23 = 1; // Configure GPIO23 as EQEP1I
+      */
 
       EDIS;
 
@@ -276,15 +297,15 @@ void Setup_DAC(void){
 
 void Setup_eQEP(void){
     // pg 1978 spruhm8i.pdf - Technical reference
-
+//pi76
     EALLOW;
     CpuSysRegs.PCLKCR4.bit.EQEP1 = 1;   //enables the clock
     EDIS;
 
     EQep1Regs.QDECCTL.bit.QSRC = 2; // Up count mode (freq. measurement)
-    EQep1Regs.QDECCTL.bit.XCR = 0;  // 1x resolution: Count the rising edge only
+    EQep1Regs.QDECCTL.bit.XCR = 1;  // 1x resolution: Count the rising edge only
     EQep1Regs.QEPCTL.bit.FREE_SOFT = 2; // Position counter is unaffected by emulation suspend
-    //EQep1Regs.QEPCTL.bit.PCRM = 0;    // Position counter reset on an index event
+    //EQep1Regs.QEPCTL.bit.PCRM = 1;    // Position counter reset on an index event
     EQep1Regs.QEPCTL.bit.QCLM = 1;      // Latch on unit time out
     EQep1Regs.QEPCTL.bit.UTE = 1;       // Unit Timer Enable
     EQep1Regs.QPOSMAX = eQEP_max_count;     // max count value
@@ -292,4 +313,8 @@ void Setup_eQEP(void){
    // EQep1Regs.QCAPCTL.bit.UPPS = 0x3;     // 1/8 for unit position
    // EQep1Regs.QCAPCTL.bit.CCPS = 7;       // 1/128 for CAP clock
     EQep1Regs.QCAPCTL.bit.CEN = 1;          // QEP Capture Enable
+    //EQep1Regs.QDECCTL.bit.QIP = 1;          // Set polarity: 0 no effects, 1 Negates QEPS input
+    EQep1Regs.QEPCTL.bit.IEL = 1;
+    EQep1Regs.QCAPCTL.bit.CEN = 1;
+
 }

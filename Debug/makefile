@@ -156,7 +156,7 @@ all: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 Biphase_inverter.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: C2000 Linker'
-	"D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/bin/cl2000" -v28 -ml -mt --cla_support=cla1 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu2 --define=CPU1 --define=_LAUNCHXL_F28379D -g --diag_warning=225 --diag_wrap=off --display_error_number --abi=coffabi -z -m"Biphase_inverter.map" --stack_size=0x200 --warn_sections -i"D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/lib" -i"D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include" --reread_libs --diag_wrap=off --display_error_number --xml_link_info="Biphase_inverter_linkInfo.xml" --rom_model -o "Biphase_inverter.out" $(ORDERED_OBJS)
+	"D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/bin/cl2000" -v28 -ml -mt --cla_support=cla1 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu2 --fp_mode=relaxed --define=CPU1 --define=_LAUNCHXL_F28379D -g --diag_warning=225 --diag_wrap=off --display_error_number --abi=coffabi -z -m"Biphase_inverter.map" --stack_size=0x200 --warn_sections -i"D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/lib" -i"D:/ti/ccs1011/ccs/tools/compiler/ti-cgt-c2000_20.2.4.LTS/include" --reread_libs --diag_wrap=off --display_error_number --xml_link_info="Biphase_inverter_linkInfo.xml" --rom_model -o "Biphase_inverter.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 
