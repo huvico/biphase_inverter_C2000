@@ -23,12 +23,14 @@ typedef enum
     INCREASING,
     DOWNING,
     FINISHED,
+//    CALIBRATING_ALPHA,
+//    CALIBRATING_BETA,
 } incStatus;
 
 #define DCL_REFGEN_DEFAULTS { 0.0f,  0.0f, \
                               0.0f,  0.0f, \
                               0.0f,  0.0f,  1.0f, \
-                              1.0f,  60.0f,  0.0f,  0.0f, 0.0f, \
+                              -1.0f,  2*M_PI*60.0f,  0.0f,  0.0f, 0.0f, \
                               0.0f,  0.0f,  0.0f,  0.0f, \
                               FINISHED}
 
@@ -124,6 +126,15 @@ static inline void run_Refgen(DCL_REFGEN *p,float* V_alpha, float* V_beta){
     }
     *V_alpha = p->ampl*cos(p->theta);
     *V_beta = p->ampl*sin(p->theta);
+/*
+    if ((p->status)==CALIBRATING_ALPHA){
+        *V_alpha = 1.0;
+        *V_beta = 0.0;
+    }
+    if ((p->status)==CALIBRATING_BETA){
+        *V_alpha = 0.0;
+        *V_beta = 1.0;
+    }*/
 }
 
 #endif /* SVPWM_H_ */

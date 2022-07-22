@@ -48,11 +48,17 @@ void Setup_GPIO(void){
       GpioCtrlRegs.GPAMUX1.bit.GPIO6 = 0;  // GPIO6 = GPIO6
       GpioCtrlRegs.GPADIR.bit.GPIO6 = 1;   // GPIO6 = output
 
-      //configures eQEP GPIO10/pin67
+      //configures eQEP GPIO10/pin76
       GpioCtrlRegs.GPAPUD.bit.GPIO10 = 1;   //disable pull-up on GPIO10
       GpioCtrlRegs.GPAQSEL1.bit.GPIO10 = 0; //sync GPIO10 to SYSCLK
       GpioCtrlRegs.GPAGMUX1.bit.GPIO10 = 1; //configures GPIO10 as eQEP1A
       GpioCtrlRegs.GPAMUX1.bit.GPIO10 = 1; //configures GPIO10 as eQEP1A
+/*
+      //configures eQEP GPIO20
+      GpioCtrlRegs.GPAPUD.bit.GPIO20 = 1;   //disable pull-up on GPIO10
+      GpioCtrlRegs.GPAQSEL2.bit.GPIO20 = 0; //sync GPIO10 to SYSCLK
+      GpioCtrlRegs.GPAGMUX2.bit.GPIO20 = 1; //configures GPIO10 as eQEP1A
+      GpioCtrlRegs.GPAMUX2.bit.GPIO20 = 1; //configures GPIO10 as eQEP1A */
 
       /*
       //eQEP config
@@ -302,8 +308,24 @@ void Setup_eQEP(void){
     CpuSysRegs.PCLKCR4.bit.EQEP1 = 1;   //enables the clock
     EDIS;
 
+    EQep1Regs.QDECCTL.bit.QSRC = 2;                 // Up count mode (freq. measurement)
+    EQep1Regs.QDECCTL.bit.XCR = 0;                  // 1x resolution: Count the rising edge only
+
+    EQep1Regs.QEPCTL.bit.FREE_SOFT = 2;             // Position counter is unaffected by emulation suspend
+    //EQep1Regs.QEPCTL.bit.PCRM = 0;                  // Position counter reset on an index event
+    EQep1Regs.QEPCTL.bit.QCLM = 1;                  // Latch on unit time out
+    EQep1Regs.QEPCTL.bit.UTE = 1;                   // Unit Timer Enable
+
+    EQep1Regs.QPOSMAX = 0xFFFFFFFF;
+    EQep1Regs.QEPCTL.bit.QPEN = 1;                  // QEP enable
+
+   // EQep1Regs.QCAPCTL.bit.UPPS = 0x3;                 // 1/8 for unit position
+   // EQep1Regs.QCAPCTL.bit.CCPS = 7;                 // 1/128 for CAP clock
+    EQep1Regs.QCAPCTL.bit.CEN = 1;                  // QEP Capture Enable
+
+    /*
     EQep1Regs.QDECCTL.bit.QSRC = 2; // Up count mode (freq. measurement)
-    EQep1Regs.QDECCTL.bit.XCR = 1;  // 1x resolution: Count the rising edge only
+    EQep1Regs.QDECCTL.bit.XCR = 0;  // 1x resolution: Count the rising edge only
     EQep1Regs.QEPCTL.bit.FREE_SOFT = 2; // Position counter is unaffected by emulation suspend
     //EQep1Regs.QEPCTL.bit.PCRM = 1;    // Position counter reset on an index event
     EQep1Regs.QEPCTL.bit.QCLM = 1;      // Latch on unit time out
@@ -315,6 +337,6 @@ void Setup_eQEP(void){
     EQep1Regs.QCAPCTL.bit.CEN = 1;          // QEP Capture Enable
     //EQep1Regs.QDECCTL.bit.QIP = 1;          // Set polarity: 0 no effects, 1 Negates QEPS input
     EQep1Regs.QEPCTL.bit.IEL = 1;
-    EQep1Regs.QCAPCTL.bit.CEN = 1;
+    EQep1Regs.QCAPCTL.bit.CEN = 1;*/
 
 }

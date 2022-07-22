@@ -52,7 +52,7 @@ void svpwm_bi(float* teta, float* V_alpha, float* V_beta,float* wma,float* wmb,f
     U1=1.0;
     U2=1.0;
     teta1=0.0;
-    teta2=280.0*M_PI/180.0;
+    teta2=270.0*M_PI/180.0;
 
     if ((*teta>=0.0)*(*teta<M_PI/4))
     {

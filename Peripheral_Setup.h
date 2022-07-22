@@ -13,7 +13,7 @@
 #define RISE_TIME 700;
 #define FALL_TIME 1000;
 //SWITCH_PERIOD=200000/(4*f_switch));//calculates PRD to configures switch period. If isnt up and down, chage to 200000/(2*f_switch), f_switch is kHz
-#define SWITCH_PERIOD 5000
+#define SWITCH_PERIOD 25000
 
 // *****************************************************************************/
 // eQEP configuration
