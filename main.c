@@ -65,11 +65,11 @@ eSystemState goto_OFF(void) //shutdown PWM, for example..
     return STOPPING;
 }
 eSystemState goto_error(void){
+    EPwm1Regs.CMPA.bit.CMPA = 0.0;// fase main_W
+    EPwm2Regs.CMPA.bit.CMPA = 0.0; //fase comum_V
+    EPwm3Regs.CMPA.bit.CMPA =0.0; //fase aux_U
     DINT;           // Disable CPU __interrupts
-    adc1 = 0;
-    adc2 = 0;
-    V_alpha = 0;
-    V_beta = 0;
+
     //optional flag error, or send a message to hi supervisory, like Hi Current alarm, trip alarm, etc
     return ERROR;
 }
@@ -95,7 +95,7 @@ eSystemState goto_CALIBRATION(void){
     //enables interruptions
     PieCtrlRegs.PIEIER1.bit.INTx7 = 1;
     PieCtrlRegs.PIEIER1.bit.INTx1 = 1; // Enable ADC interruption
-    //CpuTimer0Regs.TCR.all = 0x4001; // Habilita a interrupção do timer, vide table 3-22 Register File
+    CpuTimer0Regs.TCR.all = 0x4001; // Habilita a interrupção do timer, vide table 3-22 Register File
     DCL_resetRefgen(&rgen);
 
     return CALIBRATING;
@@ -119,16 +119,19 @@ eSystemEvent ReadEvent(void)
         PieCtrlRegs.PIEIER1.bit.INTx7 = 1; // Habilita a interrupção do timer, vide tabela 3-4 do manual
         EDIS;
         DCL_resetRefgen(&rgen);
-        DCL_setRefgen(&rgen,0.707,2.0*M_PI*60.0, w_nom, START_TIME_MACHINE, TS_RefGen);
+        DCL_setRefgen(&rgen,0.707,2.0*M_PI*60.0, w_nom, START_TIME_MACHINE, Ts);
         turn_on_command = 0;
         return turnOn_command;
     }
     if(set_new_ref == 1){
+        new_f = 60.0*new_amp;
         DCL_setRefgen(&rgen,new_amp,2.0*M_PI*60.0, 2.0*M_PI*new_f, START_TIME_MACHINE/2.0, TS_RefGen);
         set_new_ref = 0;
         return no_events;
 
     }
+
+    /*
 
     if (turnon_calibration == 1){
         EALLOW;
@@ -140,7 +143,7 @@ eSystemEvent ReadEvent(void)
 
         turnon_calibration = 0;
         return turn_calibration;
-    }
+    }*/
     return no_events;
 }
 
@@ -164,6 +167,8 @@ int main(void){
             Setup_eQEP();
             GpioDataRegs.GPASET.bit.GPIO6=1;
             w_nom = 2.0*M_PI*60.0;
+
+            TS_RefGen = Ts;
 
             DCL_resetRefgen(&rgen);
             DCL_setRefgen(&rgen,0.707,2.0*M_PI*60.0, w_nom, START_TIME_MACHINE, TS_RefGen);
@@ -202,6 +207,7 @@ int main(void){
         break;
         case ERROR:
         {
+
             if(turnOn_command == eNewEvent)
             {
                // isr_adc();      //read current values
@@ -210,6 +216,40 @@ int main(void){
             }
         }
         break;
+/*
+        case CALIBRATING:
+        {
+            if(turnOn_command == eNewEvent)
+            {
+               // isr_adc();      //read current values
+                eNextState = end_init_goto_ON();
+            }
+            if(Shutdown_command == eNewEvent){
+                eNextState = goto_OFF();
+            }
+
+            offset1=0.0;
+            offset2=0.0;
+            index_cal = 0;
+            while (index_cal < 20)
+            {
+                DELAY_US(100000);
+                offset1 = offset1 + AdcaResultRegs.ADCRESULT1;
+                offset2 = offset2 + AdcaResultRegs.ADCRESULT2;
+                index_cal =index_cal + 1;
+
+            }
+
+
+            offset1 = offset1/20.0;
+            offset2 = offset2/20.0;
+
+            calibration=1;
+            eNextState = goto_OFF();
+
+        }
+        break;
+*/
         case STOPPED:
         {
             if (turnOn_command == eNewEvent)
@@ -222,11 +262,9 @@ int main(void){
             }
 
         }
-
+        break;
         default:
             break;
-
-
         }
 
     }
@@ -236,30 +274,20 @@ int main(void){
 // Interruptio ADC function
 __interrupt void isr_adc(void){
 //    GpioDataRegs.GPASET.bit.GPIO6=1;
-    if(calibration==0){
+   /* if(calibration==0){
         DELAY_US(1000000);
         offset1=AdcaResultRegs.ADCRESULT1;
         offset2=AdcaResultRegs.ADCRESULT2;
         calibration=1;
-    }
+    }*/
 
 
     //load the adc result to the variables adc1 and adc2
     adc1 = sensor_1*(float)(AdcaResultRegs.ADCRESULT1-offset1)/4096.0;      //ADC INA4 - leitura da corrente 1,aux, PIN69
     adc2 = sensor_2*(float)(AdcaResultRegs.ADCRESULT2-offset2)/4096.0;//2*Imax*AdcaResultRegs.ADCRESULT1/3400 - Imax ;   //ADC INA5, pin66, Imain
-    adc3 = 2*355.329949*((float)AdcaResultRegs.ADCRESULT0)/4096.0;//118.64 INA3, PIN26 J3 VDC
-
-    run_Refgen(&rgen,&V_alpha, &V_beta);
-    modulo=sqrt(V_alpha*(V_alpha)+V_beta*(V_beta));
-    frequencia = rgen.freq;
-    teta=rgen.theta;
+    adc3 = 0.17350095166015625*((float)AdcaResultRegs.ADCRESULT0);//118.64 INA3, PIN26 J3 VDC (calibrado)
 
 
-    svpwm_bi(&teta, &V_alpha,&V_beta,&wma,&wmb,&wmc);
-
-    EPwm1Regs.CMPA.bit.CMPA = wma*SWITCH_PERIOD;// fase main_W
-    EPwm2Regs.CMPA.bit.CMPA = wmb*SWITCH_PERIOD; //fase comum_V
-    EPwm3Regs.CMPA.bit.CMPA = wmc*SWITCH_PERIOD; //fase aux_U
 
     //GpioDataRegs.GPACLEAR.bit.GPIO6=1;
 
@@ -298,6 +326,20 @@ __interrupt void isr_cpu_timer0(void){
     sum_avg = sum_avg + powf(((float)plot[index]),2);
     plot2[index]=*p_adc2;
     sum_avg2 = sum_avg2 + powf(((float)plot2[index]),2);
+
+    // calcula novas referências de tensão
+    run_Refgen(&rgen,&V_alpha, &V_beta);
+    modulo=sqrt(V_alpha*(V_alpha)+V_beta*(V_beta));
+    frequencia = rgen.freq;
+    teta=rgen.theta;
+
+    svpwm_bi(&teta, &V_alpha,&V_beta,&wma,&wmb,&wmc);
+    //atualiza o duty cicle
+    EPwm1Regs.CMPA.bit.CMPA = wma*SWITCH_PERIOD;// fase main_W
+    EPwm2Regs.CMPA.bit.CMPA = wmb*SWITCH_PERIOD; //fase comum_V
+    EPwm3Regs.CMPA.bit.CMPA = wmc*SWITCH_PERIOD; //fase aux_U
+
+
 
 
     //index_rpm = (index_rpm == 120*BUFFER_plot_size) ? 0 : (index_rpm+1);

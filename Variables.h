@@ -27,10 +27,10 @@ __interrupt void isr_adc(void);         //ADC interruption function
 float adc1 = 0; //Ialfa
 float adc2 = 0; //Ibeta
 float adc3 = 0; //Vcc
-float sensor_1 = 24.84,sensor_2 = 27.72;
+float sensor_1 = 45.371,sensor_2 = 44.62;
 float w_nom = 0;
 float new_amp = 0.2,new_f = 60;
-float Imax = 10;
+float Imax = 30;
 float soma = 0;
 float frequencia = 0;
 float wma = 0;
@@ -42,7 +42,7 @@ float modulo = 0;
 
 // *****************************************************************************/
 
-unsigned char send = 0, turn_off_command = 0, turn_on_command = 0, set_new_ref = 0, calibration = 0,turnon_calibration = 0;
+unsigned char send = 0, turn_off_command = 0, turn_on_command = 0, set_new_ref = 0, calibration = 1, turnon_calibration = 0;
 float V_alpha = 0.0, V_beta = 0.0, teta = 0;
 // velocity calculation
 unsigned long delta_pos = 0;
@@ -68,8 +68,8 @@ float Ts=1.0/60.0/(float)BUFFER_plot_size; //sample timmer interruption
 
 // *****************************************************************************/
 // Offset variables for current measurements
-float offset1 = 0;
-float offset2 = 0;
+float offset1 = 2290;
+float offset2 = 2290;
 float offset3 = 0;
 
 
