@@ -107,7 +107,7 @@ eSystemEvent ReadEvent(void)
         return HI_Current;
     }
     if(turn_off_command == 1){
-        DCL_setRefgen(&rgen,0.0,2.0*M_PI*60.0, 0.0, START_TIME_MACHINE/2.0, TS_RefGen);
+        DCL_setRefgen(&rgen,0.0,2.0*M_PI*60.0, 0.0, START_TIME_MACHINE/2.0, Ts);
         turn_off_command = 0;
         return Shutdown_command;
     }
@@ -124,8 +124,8 @@ eSystemEvent ReadEvent(void)
         return turnOn_command;
     }
     if(set_new_ref == 1){
-        new_f = 60.0*new_amp;
-        DCL_setRefgen(&rgen,new_amp,2.0*M_PI*60.0, 2.0*M_PI*new_f, START_TIME_MACHINE/2.0, TS_RefGen);
+        //new_f = 60.0*new_amp;
+        DCL_setRefgen(&rgen,new_amp,2.0*M_PI*60.0, 2.0*M_PI*new_f, START_TIME_MACHINE/2.0, Ts);
         set_new_ref = 0;
         return no_events;
 
@@ -309,11 +309,14 @@ __interrupt void isr_cpu_timer0(void){
 
     if (index == (int)BUFFER_plot_size){
         index = 0;
-        avg_plot = sqrt(sum_avg/(float)BUFFER_plot_size);
+        avg_plot = 0.95*avg_plot + 0.05*sqrt(sum_avg/(float)BUFFER_plot_size);
         sum_avg = 0;
 
-        avg_plot2 = sqrt(sum_avg2/(float)BUFFER_plot_size);
+        avg_plot2 = 0.95*avg_plot2 + 0.05*sqrt(sum_avg2/(float)BUFFER_plot_size);
         sum_avg2 = 0;
+
+        avg_plot3 = 0.95*avg_plot3 + 0.05*sqrt(sum_avg3/(float)BUFFER_plot_size);
+        sum_avg3 = 0;
     }
     else{
         index = index + 1;
@@ -324,8 +327,12 @@ __interrupt void isr_cpu_timer0(void){
     //index = (index == (int)BUFFER_plot_size) ? 0 : (index+1);
     plot[index]=*p_adc;
     sum_avg = sum_avg + powf(((float)plot[index]),2);
+
     plot2[index]=*p_adc2;
     sum_avg2 = sum_avg2 + powf(((float)plot2[index]),2);
+
+    plot3[index]=*p_adc3;
+    sum_avg3 = sum_avg3 + powf(((float)plot3[index]),2);
 
     // calcula novas referências de tensão
     run_Refgen(&rgen,&V_alpha, &V_beta);
@@ -343,7 +350,7 @@ __interrupt void isr_cpu_timer0(void){
 
 
     //index_rpm = (index_rpm == 120*BUFFER_plot_size) ? 0 : (index_rpm+1);
-
+/*
     if (index_rpm == (2.0*60.0*BUFFER_plot_size)){
         Calc_RPM();
         GpioDataRegs.GPATOGGLE.bit.GPIO6=1;
@@ -353,7 +360,7 @@ __interrupt void isr_cpu_timer0(void){
     }
     else index_rpm = index_rpm+1;
 
-
+*/
     PieCtrlRegs.PIEACK.all = PIEACK_GROUP1;
 }
 

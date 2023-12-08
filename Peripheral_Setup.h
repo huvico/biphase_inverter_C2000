@@ -10,8 +10,8 @@
 #include "F28x_Project.h"
 
 
-#define RISE_TIME 230;
-#define FALL_TIME 300;
+#define RISE_TIME 350;
+#define FALL_TIME 350;
 //SWITCH_PERIOD=200000/(4*f_switch));//calculates PRD to configures switch period. If isnt up and down, chage to 200000/(2*f_switch), f_switch is kHz
 #define SWITCH_PERIOD 5000
 

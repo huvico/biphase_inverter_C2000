@@ -29,7 +29,7 @@ float adc2 = 0; //Ibeta
 float adc3 = 0; //Vcc
 float sensor_1 = 45.371,sensor_2 = 44.62;
 float w_nom = 0;
-float new_amp = 0.2,new_f = 60;
+float new_amp = 0.5,new_f = 60;
 float Imax = 30;
 float soma = 0;
 float frequencia = 0;
@@ -53,7 +53,7 @@ float period = 0;
 
 // *****************************************************************************/
 // plot variables
-#define BUFFER_plot_size 200
+#define BUFFER_plot_size 400
 float *p_adc = &adc1;
 float plot[BUFFER_plot_size];
 float avg_plot = 0, sum_avg = 0;
@@ -62,8 +62,12 @@ float *p_adc2 = &adc2;
 float plot2[BUFFER_plot_size];
 float avg_plot2 = 0, sum_avg2 = 0;
 
+float *p_adc3 = &adc3;
+float plot3[BUFFER_plot_size];
+float avg_plot3 = 0, sum_avg3 = 0;
+
 uint32_t index = 0;
-float Ts=1.0/60.0/(float)BUFFER_plot_size; //sample timmer interruption
+float Ts=2.0/60.0/(float)BUFFER_plot_size; //sample timmer interruption
 
 
 // *****************************************************************************/
