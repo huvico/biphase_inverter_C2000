@@ -196,7 +196,6 @@ typedef enum
 
 ## Diagrama de estados (Mermaid)
 
-
 ```mermaid
 stateDiagram-v2
     [*] --> INIT
@@ -207,7 +206,7 @@ stateDiagram-v2
     RUNNING --> ERROR : HI_Current
   STOPPING --> STOPPED : modulo &lt; epsilon_modulo
   ERROR --> RUNNING : turnOn_command
----
+```
 
 ## Resumo operacional
 
