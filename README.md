@@ -196,45 +196,17 @@ typedef enum
 
 ## Diagrama de estados (Mermaid)
 
-Se sua ferramenta suporta Mermaid, você pode usar o diagrama abaixo diretamente:
 
 ```mermaid
 stateDiagram-v2
     [*] --> INIT
-
-    INIT --> STOPPED : após initialization + Setup_*
-
-    STOPPED --> RUNNING : turnOn_command
+  INIT --> STOPPED : initialization + Setup_*
+  STOPPED --> RUNNING : turnOn_command
     STOPPED --> CALIBRATING : turn_calibration
-
-    RUNNING --> STOPPING : Shutdown_command
+  RUNNING --> STOPPING : Shutdown_command
     RUNNING --> ERROR : HI_Current
-
-    STOPPING --> STOPPED : modulo < epsilon_modulo
-
-    ERROR --> RUNNING : turnOn_command
-
-    state RUNNING {
-        [*] --> RUNNING
-    }
-
-    state STOPPING {
-        [*] --> STOPPING
-    }
-
-    state STOPPED {
-        [*] --> STOPPED
-    }
-
-    state ERROR {
-        [*] --> ERROR
-    }
-
-    state CALIBRATING {
-        [*] --> CALIBRATING
-    }
-```
-
+  STOPPING --> STOPPED : modulo &lt; epsilon_modulo
+  ERROR --> RUNNING : turnOn_command
 ---
 
 ## Resumo operacional
